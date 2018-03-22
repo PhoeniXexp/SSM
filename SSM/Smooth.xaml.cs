@@ -27,6 +27,9 @@ namespace SSM
         private bool _canDraw;
         private double _startX, _startY;
 
+        public Point p1;
+        public Point p2;
+
         private void Window_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
             _canDraw = true;
@@ -39,7 +42,16 @@ namespace SSM
         private void Window_MouseLeftButtonUp(object sender, MouseButtonEventArgs e)
         {
             _canDraw = false;
+
+            p1.X = (double)rect.GetValue(Canvas.LeftProperty);
+            p1.Y = (double)rect.GetValue(Canvas.TopProperty);
+
+            p2.X = rect.Width;
+            p2.Y = rect.Height;
+
             rect.Visibility = Visibility.Collapsed;
+
+            this.Close();
         }
 
         private void sm_window_MouseMove(object sender, MouseEventArgs e)

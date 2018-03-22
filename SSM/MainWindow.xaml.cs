@@ -15,6 +15,7 @@ using System.Windows.Shapes;
 using System.Windows.Forms;
 using System.Drawing;
 using System.Drawing.Imaging;
+using System.IO;
 
 namespace SSM
 {
@@ -95,7 +96,17 @@ namespace SSM
             sm.Left = 0;
             sm.Height = SystemInformation.VirtualScreen.Height;
             sm.Width = SystemInformation.VirtualScreen.Width;
-            sm.Show();
+            sm.ShowDialog();
+
+            string path = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile) + "\\Pictures\\ScreenShots";
+            string name = path + "\\ss-" + DateTime.Now.ToString("yyyy.MM.dd-hh.mm.ss");
+
+            if (!Directory.Exists(path))
+                Directory.CreateDirectory(path);
+
+            save((int)sm.p2.X, (int)sm.p2.Y, (int)sm.p1.X, (int)sm.p1.Y, name);
+
+            bsmooth = false;
         }
 
         private void _exitMenu(object sender, EventArgs e)
@@ -110,50 +121,48 @@ namespace SSM
             int screenWidth = SystemInformation.VirtualScreen.Width;
             int screenHeight = SystemInformation.VirtualScreen.Height;
 
-            string dn = "";
-            string name = "ss-" + DateTime.Now.ToString("yyyy.MM.dd-hh.mm.ss");
+            string path = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile) + "\\Pictures\\ScreenShots";
+            string name = path + "\\ss-" + DateTime.Now.ToString("yyyy.MM.dd-hh.mm.ss");
+
+            if (!Directory.Exists(path))
+                Directory.CreateDirectory(path);
+
+            save(screenWidth, screenHeight, screenLeft, screenTop, name);
 
             if (SystemInformation.MonitorCount == 2)
             {
                 if (screenWidth == 3840)
                 {
-                    screenWidth = 1920;
-                    int screenTop2 = screenTop;                   
+                    int screenTop2 = 0;
+                    int screenHeight2 = screenHeight;
 
                     if (screenHeight == 1090)
                     {
-                        screenHeight = 1080;
+                        screenHeight2 = 1080;
                         screenTop2 = 10;
                     }
-                    
-                    using (Bitmap bmp = new Bitmap(1920, screenHeight))
-                    {
-                        using (Graphics g = Graphics.FromImage(bmp))
-                        {
-                            String filename = name + "-2" + ".png";
-                            Opacity = .0;
-                            g.CopyFromScreen(1920, screenTop2, 0, 0, bmp.Size);
-                            bmp.Save(filename, ImageFormat.Png);
-                            Opacity = 1;
-                        }
-                    }
 
-                    dn = "-1";
+                    save(1920, screenHeight2, screenLeft, screenTop, name, "-1");
+                    save(1920, screenHeight2, 1920, screenTop2, name, "-2");
+
                 }
             }
 
-            using (Bitmap bmp = new Bitmap(screenWidth, screenHeight))
+        }
+
+        private void save(int width, int height, int x, int y, string name, string dn = "")
+        {
+            using (Bitmap bmp = new Bitmap(width, height))
             {
                 using (Graphics g = Graphics.FromImage(bmp))
                 {
                     String filename = name + dn + ".png";
                     Opacity = .0;
-                    g.CopyFromScreen(screenLeft, screenTop, 0, 0, bmp.Size);
+                    g.CopyFromScreen(x, y, 0, 0, bmp.Size);
                     bmp.Save(filename, ImageFormat.Png);
                     Opacity = 1;
                 }
             }
-
         }
 
         private void Window_Closed(object sender, EventArgs e)
