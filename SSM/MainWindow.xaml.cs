@@ -12,6 +12,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using System.Windows.Forms;
 
 namespace SSM
 {
@@ -23,6 +24,38 @@ namespace SSM
         public MainWindow()
         {
             InitializeComponent();
+
+            KBDHook.LocalHook = false;
+            KBDHook.InstallHook();
+
+            KBDHook.KeyDown += new KBDHook.HookKeyPress(Hooks_KeyDown);
+            KBDHook.KeyUp += new KBDHook.HookKeyPress(Hooks_KeyUp);
+
+            this.Closed += (s, e) =>
+            {
+                KBDHook.UnInstallHook();
+            };
         }
+
+        void Hooks_KeyUp(LLKHEventArgs e)
+        {
+            listbox.Items.Insert(0, e.ScanCode + " " + e.Keys + " " + e.IsPressed);
+        }
+
+        void Hooks_KeyDown(LLKHEventArgs e)
+        {
+            listbox.Items.Insert(0, e.ScanCode + " " + e.Keys + " " + e.IsPressed);
+            if (e.Keys == Keys.PrintScreen)
+            {
+                screen();
+            }
+        }
+
+        private void screen()
+        {
+           
+
+        }
+        
     }
 }

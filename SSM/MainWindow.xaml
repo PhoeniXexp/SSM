@@ -7,6 +7,7 @@
         mc:Ignorable="d"
         Title="ScreenShot Maker" Height="450" Width="800" ResizeMode="CanMinimize">
     <Grid>
-        
+        <ListBox x:Name="listbox" Margin="123,56,92,55"/>
+
     </Grid>
 </Window>
