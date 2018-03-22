@@ -14,6 +14,7 @@ using System.Windows.Navigation;
 using System.Windows.Shapes;
 using System.Windows.Forms;
 using System.Drawing;
+using System.Drawing.Imaging;
 
 namespace SSM
 {
@@ -59,21 +60,49 @@ namespace SSM
             int screenWidth = SystemInformation.VirtualScreen.Width;
             int screenHeight = SystemInformation.VirtualScreen.Height;
 
-            //SystemInformation.MonitorCount;
+            string dn = "";
+            string name = "ss-" + DateTime.Now.ToString("yyyy.MM.dd-hh.mm.ss");
+
+            if (SystemInformation.MonitorCount == 2)
+            {
+                if (screenWidth == 3840)
+                {
+                    screenWidth = 1920;
+                    int screenTop2 = screenTop;                   
+
+                    if (screenHeight == 1090)
+                    {
+                        screenHeight = 1080;
+                        screenTop2 = 10;
+                    }
+                    
+                    using (Bitmap bmp = new Bitmap(1920, screenHeight))
+                    {
+                        using (Graphics g = Graphics.FromImage(bmp))
+                        {
+                            String filename = name + "-2" + ".png";
+                            Opacity = .0;
+                            g.CopyFromScreen(1920, screenTop2, 0, 0, bmp.Size);
+                            bmp.Save(filename, ImageFormat.Png);
+                            Opacity = 1;
+                        }
+                    }
+
+                    dn = "-1";
+                }
+            }
 
             using (Bitmap bmp = new Bitmap(screenWidth, screenHeight))
             {
                 using (Graphics g = Graphics.FromImage(bmp))
                 {
-                    String filename = "SSM-" + DateTime.Now.ToString("yyyy-MM.dd-hh.mm.ss") + ".png";
+                    String filename = name + dn + ".png";
                     Opacity = .0;
                     g.CopyFromScreen(screenLeft, screenTop, 0, 0, bmp.Size);
-                    bmp.Save(filename);
+                    bmp.Save(filename, ImageFormat.Png);
                     Opacity = 1;
                 }
             }
-
-
 
         }
 
