@@ -13,6 +13,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 using System.Windows.Forms;
+using System.Drawing;
 
 namespace SSM
 {
@@ -53,9 +54,28 @@ namespace SSM
 
         private void screen()
         {
-           
+            int screenLeft = SystemInformation.VirtualScreen.Left;
+            int screenTop = SystemInformation.VirtualScreen.Top;
+            int screenWidth = SystemInformation.VirtualScreen.Width;
+            int screenHeight = SystemInformation.VirtualScreen.Height;
+
+            //SystemInformation.MonitorCount;
+
+            using (Bitmap bmp = new Bitmap(screenWidth, screenHeight))
+            {
+                using (Graphics g = Graphics.FromImage(bmp))
+                {
+                    String filename = "SSM-" + DateTime.Now.ToString("yyyy-MM.dd-hh.mm.ss") + ".png";
+                    Opacity = .0;
+                    g.CopyFromScreen(screenLeft, screenTop, 0, 0, bmp.Size);
+                    bmp.Save(filename);
+                    Opacity = 1;
+                }
+            }
+
+
 
         }
-        
+
     }
 }
