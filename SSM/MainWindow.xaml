@@ -5,9 +5,6 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:SSM"
         mc:Ignorable="d"
-        Title="ScreenShot Maker" Height="450" Width="800" ResizeMode="CanMinimize">
-    <Grid>
-        <ListBox x:Name="listbox" Margin="123,56,92,55"/>
-
-    </Grid>
+        Title="ScreenShot Maker" Height="168.908" Width="413.025" ResizeMode="NoResize" Closed="Window_Closed">
+    <Grid/>
 </Window>

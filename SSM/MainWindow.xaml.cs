@@ -26,7 +26,21 @@ namespace SSM
         public MainWindow()
         {
             InitializeComponent();
+                       
+            _contextMenu = new System.Windows.Forms.ContextMenu();
 
+            _contextMenu.MenuItems.Add("Выход", new EventHandler(_exitMenu));        
+
+            ni = new NotifyIcon()
+            {
+                Icon = Properties.Resources.PictureWF,
+                Visible = true,
+                ContextMenu = _contextMenu,
+                Text = "ScreenShot Maker"
+            };
+            this.Hide();
+            this.WindowState = WindowState.Minimized;
+            
             KBDHook.LocalHook = false;
             KBDHook.InstallHook();
 
@@ -39,18 +53,54 @@ namespace SSM
             };
         }
 
-        void Hooks_KeyUp(LLKHEventArgs e)
+        NotifyIcon ni;
+        System.Windows.Forms.ContextMenu _contextMenu;
+        private bool ctrl_key = false;
+        private bool bsmooth = false;
+
+        private Smooth sm = new Smooth();
+
+        private void Hooks_KeyUp(LLKHEventArgs e)
         {
-            listbox.Items.Insert(0, e.ScanCode + " " + e.Keys + " " + e.IsPressed);
+            if (e.Keys == Keys.RControlKey) ctrl_key = false;
         }
 
-        void Hooks_KeyDown(LLKHEventArgs e)
+        private void Hooks_KeyDown(LLKHEventArgs e)
         {
-            listbox.Items.Insert(0, e.ScanCode + " " + e.Keys + " " + e.IsPressed);
+            if (e.Keys == Keys.RControlKey) ctrl_key = true;
+
             if (e.Keys == Keys.PrintScreen)
-            {
-                screen();
-            }
+                if (!bsmooth)
+                {
+                    if (ctrl_key)
+                        smooth();
+                    else
+                        screen();
+                }
+
+            if(bsmooth)
+                if (e.Keys == Keys.Escape)
+                {
+                    sm.Close();
+                    bsmooth = false;
+                }
+        }
+
+        private void smooth()
+        {
+            bsmooth = true;
+
+            sm = new Smooth();
+            sm.Top = 0;
+            sm.Left = 0;
+            sm.Height = SystemInformation.VirtualScreen.Height;
+            sm.Width = SystemInformation.VirtualScreen.Width;
+            sm.Show();
+        }
+
+        private void _exitMenu(object sender, EventArgs e)
+        {
+            Stop();
         }
 
         private void screen()
@@ -106,5 +156,15 @@ namespace SSM
 
         }
 
+        private void Window_Closed(object sender, EventArgs e)
+        {
+            Stop();
+        }
+
+        private void Stop()
+        {
+            ni.Dispose();
+            System.Windows.Application.Current.Shutdown();
+        }
     }
 }
