@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:SSM"
         mc:Ignorable="d"
-        Title="Smooth" Height="450" Width="800" ResizeMode="NoResize" ShowInTaskbar="False" Opacity="0.3" WindowStyle="None" AllowsTransparency="True" Background="#FFADE2B7" MouseLeftButtonDown="Window_MouseLeftButtonDown" MouseLeftButtonUp="Window_MouseLeftButtonUp" MouseMove="sm_window_MouseMove">
+        Title="Smooth" Height="450" Width="800" ResizeMode="NoResize" ShowInTaskbar="False" Opacity="0.3" Background="#FFADE2B7" MouseLeftButtonDown="Window_MouseLeftButtonDown" MouseLeftButtonUp="Window_MouseLeftButtonUp" MouseMove="sm_window_MouseMove" AllowsTransparency="True" WindowStyle="None" Topmost="True">
     <Canvas x:Name="BackPlane">
         <Rectangle x:Name="rect" Stroke="Red" Visibility="Collapsed" Fill="White" StrokeThickness="2"/>
     </Canvas>
