@@ -30,7 +30,8 @@ namespace SSM
                        
             _contextMenu = new System.Windows.Forms.ContextMenu();
 
-            _contextMenu.MenuItems.Add("Выход", new EventHandler(_exitMenu));        
+            _contextMenu.MenuItems.Add("Настройки", new EventHandler(new_settings));
+            _contextMenu.MenuItems.Add("Выход", new EventHandler(_exitMenu));            
 
             ni = new NotifyIcon()
             {
@@ -52,12 +53,16 @@ namespace SSM
             {
                 KBDHook.UnInstallHook();
             };
+
+            init_settings();
         }
 
         NotifyIcon ni;
         System.Windows.Forms.ContextMenu _contextMenu;
         private bool ctrl_key = false;
         private bool bsmooth = false;
+
+        private List<string> _settings = new List<string>();
 
         private Smooth sm = new Smooth();
 
@@ -87,6 +92,49 @@ namespace SSM
                 }
         }
 
+        private void new_settings(object sender, EventArgs e)
+        {
+            Settings sett = new Settings(_settings);            
+            sett.ShowDialog();
+
+            _settings = sett.settings;
+        }
+
+        private void init_settings()
+        {
+            string path = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) + "\\SSM\\";
+            string file = path + "settings.ini";
+            _settings = new List<string>();
+
+            if (!Directory.Exists(path))
+            {
+                Directory.CreateDirectory(path);
+
+                using (StreamWriter writer = new StreamWriter(file))
+                {
+                    writer.WriteLine("MultiDisplay=True");
+                    writer.WriteLine("Path=" + Environment.GetFolderPath(Environment.SpecialFolder.MyPictures) + "\\Screenshots");
+                    writer.WriteLine("AutoBoot=False");
+                }
+            }
+
+            using (StreamReader reader = new StreamReader(file))
+            {
+                string line;
+                line = reader.ReadLine();
+                line = (line.Split('=')[1] == "True") ? "1" : "0";
+                _settings.Add(line);
+
+                line = reader.ReadLine();
+                _settings.Add(line.Split('=')[1]);
+
+                line = reader.ReadLine();
+                line = (line.Split('=')[1] == "True") ? "1" : "0";
+                _settings.Add(line);
+            }
+
+        }
+
         private void smooth()
         {
             bsmooth = true;
@@ -98,7 +146,7 @@ namespace SSM
             sm.Width = SystemInformation.VirtualScreen.Width;
             sm.ShowDialog();
 
-            string path = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile) + "\\Pictures\\ScreenShots";
+            string path = _settings[1];
             string name = path + "\\ss-" + DateTime.Now.ToString("yyyy.MM.dd-hh.mm.ss");
 
             if (!Directory.Exists(path))
@@ -121,7 +169,7 @@ namespace SSM
             int screenWidth = SystemInformation.VirtualScreen.Width;
             int screenHeight = SystemInformation.VirtualScreen.Height;
 
-            string path = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile) + "\\Pictures\\ScreenShots";
+            string path = _settings[1];
             string name = path + "\\ss-" + DateTime.Now.ToString("yyyy.MM.dd-hh.mm.ss");
 
             if (!Directory.Exists(path))
@@ -129,25 +177,27 @@ namespace SSM
 
             save(screenWidth, screenHeight, screenLeft, screenTop, name);
 
-            if (SystemInformation.MonitorCount == 2)
+            if (_settings[0] == "1")
             {
-                if (screenWidth == 3840)
+                if (SystemInformation.MonitorCount == 2)
                 {
-                    int screenTop2 = 0;
-                    int screenHeight2 = screenHeight;
-
-                    if (screenHeight == 1090)
+                    if (screenWidth == 3840)
                     {
-                        screenHeight2 = 1080;
-                        screenTop2 = 10;
+                        int screenTop2 = 0;
+                        int screenHeight2 = screenHeight;
+
+                        if (screenHeight == 1090)
+                        {
+                            screenHeight2 = 1080;
+                            screenTop2 = 10;
+                        }
+
+                        save(1920, screenHeight2, screenLeft, screenTop, name, "-1");
+                        save(1920, screenHeight2, 1920, screenTop2, name, "-2");
+
                     }
-
-                    save(1920, screenHeight2, screenLeft, screenTop, name, "-1");
-                    save(1920, screenHeight2, 1920, screenTop2, name, "-2");
-
                 }
             }
-
         }
 
         private void save(int width, int height, int x, int y, string name, string dn = "")
