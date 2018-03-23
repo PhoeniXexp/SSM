@@ -16,6 +16,7 @@ using System.Windows.Forms;
 using System.Drawing;
 using System.Drawing.Imaging;
 using System.IO;
+using System.Diagnostics;
 
 namespace SSM
 {
@@ -38,7 +39,7 @@ namespace SSM
                 Icon = Properties.Resources.PictureWF,
                 Visible = true,
                 ContextMenu = _contextMenu,
-                Text = "ScreenShot Maker"
+                Text = "ScreenShot Maker"                
             };
             this.Hide();
             this.WindowState = WindowState.Minimized;
@@ -55,6 +56,8 @@ namespace SSM
             };
 
             init_settings();
+
+            ni.MouseDoubleClick += new System.Windows.Forms.MouseEventHandler(open_folder);
         }
 
         NotifyIcon ni;
@@ -65,6 +68,11 @@ namespace SSM
         private List<string> _settings = new List<string>();
 
         private Smooth sm = new Smooth();
+
+        private void open_folder(object sender, EventArgs e)
+        {
+            Process.Start(_settings[1]);
+        }
 
         private void Hooks_KeyUp(LLKHEventArgs e)
         {
@@ -94,10 +102,20 @@ namespace SSM
 
         private void new_settings(object sender, EventArgs e)
         {
-            Settings sett = new Settings(_settings);            
+            Settings sett = new Settings(_settings);
             sett.ShowDialog();
 
             _settings = sett.settings;
+
+            string path = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) + "\\SSM\\";
+            string file = path + "settings.ini";
+
+            using (StreamWriter writer = new StreamWriter(file))
+            {
+                writer.WriteLine("MultiDisplay={0}", (_settings[0] == "1") ? "True" : "False");
+                writer.WriteLine("Path={0}", _settings[1]);
+                writer.WriteLine("AutoBoot={0}", (_settings[2] == "1") ? "True" : "False");
+            }
         }
 
         private void init_settings()
