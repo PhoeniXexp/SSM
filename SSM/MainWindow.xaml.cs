@@ -28,6 +28,8 @@ namespace SSM
         public MainWindow()
         {
             InitializeComponent();
+
+            second_start();
                        
             _contextMenu = new System.Windows.Forms.ContextMenu();
 
@@ -68,6 +70,24 @@ namespace SSM
         private List<string> _settings = new List<string>();
 
         private Smooth sm = new Smooth();
+
+        private void second_start()
+        {
+            Process proc = Process.GetCurrentProcess();
+            int curProc = proc.Id;
+
+            Process[] procs = Process.GetProcessesByName("SSM");
+            foreach (Process pr in procs)
+            {
+                if (pr.Id != curProc)
+                {
+                    if (pr.MainModule.FileVersionInfo.FileDescription == "SSM")
+                    {
+                        Process.GetCurrentProcess().Kill();
+                    }
+                }
+            }
+        }
 
         private void open_folder(object sender, EventArgs e)
         {
