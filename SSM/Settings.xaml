@@ -5,9 +5,9 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:SSM"
         mc:Ignorable="d"
-        Title="SSM: Settings" Height="196.943" Width="500.381" ResizeMode="NoResize" WindowStartupLocation="CenterScreen">
+        Title="PhoeniX © 2018" Height="196.943" Width="500.381" ResizeMode="NoResize" WindowStartupLocation="CenterScreen">
     <Grid>
-        <CheckBox x:Name="checkbox1" Content="Скриншот каждого экрана" HorizontalAlignment="Left" Margin="25,25,0,0" VerticalAlignment="Top" IsChecked="True" ToolTip="[Работает только с 1920х1080 2 экрана]" Click="checkbox1_Click"/>
+        <CheckBox x:Name="checkbox1" Content="Скриншот каждого экрана" HorizontalAlignment="Left" Margin="25,25,0,0" VerticalAlignment="Top" ToolTip="[Работает только с 1920х1080 2 экрана]" Click="checkbox1_Click" Visibility="Hidden"/>
         <CheckBox x:Name="checkbox2" HorizontalAlignment="Left" Margin="25,50,0,0" VerticalAlignment="Top" Content="Автозагрузка" ToolTip="" Click="checkbox2_Click"/>
         <TextBox x:Name="textbox" HorizontalAlignment="Left" Height="22" Margin="25,75,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="350" IsEnabled="False"/>
         <Button x:Name="btn_obzor" Content="Обзор" HorizontalAlignment="Left" Height="22" Margin="400,75,0,0" VerticalAlignment="Top" Width="60" Click="btn_obzor_Click"/>

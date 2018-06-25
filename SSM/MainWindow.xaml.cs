@@ -152,7 +152,7 @@ namespace SSM
 
                 using (StreamWriter writer = new StreamWriter(file))
                 {
-                    writer.WriteLine("MultiDisplay=True");
+                    writer.WriteLine("MultiDisplay=False");
                     writer.WriteLine("Path=" + Environment.GetFolderPath(Environment.SpecialFolder.MyPictures) + "\\Screenshots");
                     writer.WriteLine("AutoBoot=False");
                 }
