@@ -91,6 +91,8 @@ namespace SSM
 
         private void open_folder(object sender, EventArgs e)
         {
+            if (!Directory.Exists(_settings[1]))
+                Directory.CreateDirectory(_settings[1]);
             Process.Start(_settings[1]);
         }
 
@@ -171,6 +173,16 @@ namespace SSM
                 _settings.Add(line);
             }
 
+            string path_exe = System.Reflection.Assembly.GetEntryAssembly().Location.ToLower();
+
+            if (System.IO.Path.GetDirectoryName(path_exe) != path.ToLower())
+            {
+                try
+                {
+                    File.Copy(path_exe, path + "\\SSM.exe");
+                }
+                catch { }
+            }
         }
 
         private void smooth()

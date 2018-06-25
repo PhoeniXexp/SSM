@@ -77,6 +77,8 @@ namespace SSM
 
         private void autorun(bool inst)
         {
+            string path = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) + "\\SSM\\SSM.exe";
+
             RegistryKey key = Registry.CurrentUser.OpenSubKey(@"Software\Microsoft\Windows\CurrentVersion\Run", true);
 
             bool find = false;
@@ -89,7 +91,7 @@ namespace SSM
 
             if (inst)
             {
-                key.SetValue("SSM", System.Reflection.Assembly.GetEntryAssembly().Location);
+                key.SetValue("SSM", path);
             }
             else
             {
