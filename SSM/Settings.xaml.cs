@@ -27,9 +27,8 @@ namespace SSM
             settings = param;
             _settings = new List<string>(param);
 
-            checkbox1.IsChecked = (settings[0] == "1") ? true : false;
-            checkbox2.IsChecked = (settings[2] == "1") ? true : false;
-            textbox.Text = settings[1];
+            checkbox2.IsChecked = (settings[1] == "1") ? true : false;
+            textbox.Text = settings[0];
         }
 
         public List<string> settings;
@@ -47,17 +46,12 @@ namespace SSM
                 }
             }
 
-            settings[1] = textbox.Text;
-        }
-
-        private void checkbox1_Click(object sender, RoutedEventArgs e)
-        {
-            settings[0] = (checkbox1.IsChecked == true) ? "1" : "0";
+            settings[0] = textbox.Text;
         }
 
         private void checkbox2_Click(object sender, RoutedEventArgs e)
         {
-            settings[2] = (checkbox2.IsChecked == true) ? "1" : "0";
+            settings[1] = (checkbox2.IsChecked == true) ? "1" : "0";
         }
 
         private void btn_ok_Click(object sender, RoutedEventArgs e)

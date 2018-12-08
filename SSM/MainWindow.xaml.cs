@@ -25,9 +25,30 @@ namespace SSM
     /// </summary>
     public partial class MainWindow : Window
     {
+        public static void SendDataAndShowMessage(System.Exception ex)
+        {
+            string text = DateTime.Now.ToShortDateString() + " " +
+            DateTime.Now.ToLongTimeString() + "\n" +
+            ex.ToString();// тут хорошо бы его отформатировать, скажем, в XML, добавить данные о времени, дате, железе и софте... 
+
+            try
+            {
+                File.AppendAllText(@"reports_ssm.txt", "\n\n\n\n" + text);
+            }
+            catch { }
+        }
+
+        public static void AppDomain_CurrentDomain_UnhandledException(object sender, UnhandledExceptionEventArgs e)
+        {
+            SendDataAndShowMessage((Exception)e.ExceptionObject);
+        }
+
         public MainWindow()
         {
             InitializeComponent();
+
+            AppDomain.CurrentDomain.UnhandledException +=
+new UnhandledExceptionEventHandler(AppDomain_CurrentDomain_UnhandledException);
 
             second_start();
                        
@@ -91,9 +112,9 @@ namespace SSM
 
         private void open_folder(object sender, EventArgs e)
         {
-            if (!Directory.Exists(_settings[1]))
-                Directory.CreateDirectory(_settings[1]);
-            Process.Start(_settings[1]);
+            if (!Directory.Exists(_settings[0]))
+                Directory.CreateDirectory(_settings[0]);
+            Process.Start(_settings[0]);
         }
 
         private void Hooks_KeyUp(LLKHEventArgs e)
@@ -134,9 +155,8 @@ namespace SSM
 
             using (StreamWriter writer = new StreamWriter(file))
             {
-                writer.WriteLine("MultiDisplay={0}", (_settings[0] == "1") ? "True" : "False");
                 writer.WriteLine("Path={0}", _settings[1]);
-                writer.WriteLine("AutoBoot={0}", (_settings[2] == "1") ? "True" : "False");
+                writer.WriteLine("AutoBoot={0}", (_settings[1] == "1") ? "True" : "False");
             }
         }
 
@@ -152,7 +172,6 @@ namespace SSM
 
                 using (StreamWriter writer = new StreamWriter(file))
                 {
-                    writer.WriteLine("MultiDisplay=False");
                     writer.WriteLine("Path=" + Environment.GetFolderPath(Environment.SpecialFolder.MyPictures) + "\\Screenshots");
                     writer.WriteLine("AutoBoot=False");
                 }
@@ -161,10 +180,7 @@ namespace SSM
             using (StreamReader reader = new StreamReader(file))
             {
                 string line;
-                line = reader.ReadLine();
-                line = (line.Split('=')[1] == "True") ? "1" : "0";
-                _settings.Add(line);
-
+              
                 line = reader.ReadLine();
                 _settings.Add(line.Split('=')[1]);
 
@@ -196,7 +212,7 @@ namespace SSM
             sm.Width = SystemInformation.VirtualScreen.Width;
             sm.ShowDialog();
 
-            string path = _settings[1];
+            string path = _settings[0];
             string name = path + "\\ss-" + DateTime.Now.ToString("yyyy.MM.dd-hh.mm.ss");
 
             if (!Directory.Exists(path))
@@ -219,7 +235,7 @@ namespace SSM
             int screenWidth = SystemInformation.VirtualScreen.Width;
             int screenHeight = SystemInformation.VirtualScreen.Height;
 
-            string path = _settings[1];
+            string path = _settings[0];
             string name = path + "\\ss-" + DateTime.Now.ToString("yyyy.MM.dd-hh.mm.ss");
 
             if (!Directory.Exists(path))
@@ -227,27 +243,6 @@ namespace SSM
 
             save(screenWidth, screenHeight, screenLeft, screenTop, name);
 
-            if (_settings[0] == "1")
-            {
-                if (SystemInformation.MonitorCount == 2)
-                {
-                    if (screenWidth == 3840)
-                    {
-                        int screenTop2 = 0;
-                        int screenHeight2 = screenHeight;
-
-                        if (screenHeight == 1090)
-                        {
-                            screenHeight2 = 1080;
-                            screenTop2 = 10;
-                        }
-
-                        save(1920, screenHeight2, screenLeft, screenTop, name, "-1");
-                        save(1920, screenHeight2, 1920, screenTop2, name, "-2");
-
-                    }
-                }
-            }
         }
 
         private void save(int width, int height, int x, int y, string name, string dn = "")
